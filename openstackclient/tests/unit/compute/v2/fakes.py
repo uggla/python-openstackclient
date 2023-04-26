@@ -34,6 +34,7 @@ from openstack.compute.v2 import server_action as _server_action
 from openstack.compute.v2 import server_group as _server_group
 from openstack.compute.v2 import server_interface as _server_interface
 from openstack.compute.v2 import server_migration as _server_migration
+from openstack.compute.v2 import server_share
 from openstack.compute.v2 import service as _service
 from openstack.compute.v2 import usage as _usage
 from openstack.compute.v2 import volume_attachment as _volume_attachment
@@ -1235,6 +1236,45 @@ def create_volume_attachments(attrs=None, count=2):
         volume_attachments.append(create_one_volume_attachment(attrs))
 
     return volume_attachments
+
+
+def create_one_share(attrs=None):
+    """Create a fake share.
+
+    :param dict attrs: A dictionary with all attributes
+    :return: A fake openstack.compute.v2.share.ShareMapping
+        object
+    """
+    attrs = attrs or {}
+
+    # Set default attributes.
+    share_mapping = {
+        "uuid": uuid.uuid4().hex,
+        "share_id": uuid.uuid4().hex,
+        "status": "inactive",
+        "tag": "foo",
+        "export_location": "my-location",
+    }
+
+    # Overwrite default attributes.
+    share_mapping.update(attrs)
+
+    return server_share.ShareMapping(**share_mapping)
+
+
+def create_share(attrs=None, count=2):
+    """Create multiple fake share attachments.
+
+    :param dict attrs: A dictionary with all attributes
+    :param int count: The number of share attachments to fake
+    :return: A list of fake
+        openstack.compute.v2.share_attachment.shareAttachment objects
+    """
+    share = []
+    for i in range(0, count):
+        share.append(create_one_share(attrs))
+
+    return share
 
 
 def create_one_hypervisor(attrs=None):
