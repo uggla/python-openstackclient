@@ -30,6 +30,7 @@ from openstack.compute.v2 import server as _server
 from openstack.compute.v2 import server_action as _server_action
 from openstack.compute.v2 import server_interface as _server_interface
 from openstack.compute.v2 import server_migration as _server_migration
+from openstack.compute.v2 import server_share
 from openstack.compute.v2 import volume_attachment as _volume_attachment
 
 from openstackclient.tests.unit import fakes
@@ -1017,6 +1018,44 @@ def create_volume_attachments(attrs=None, count=2):
 
     return volume_attachments
 
+
+def create_one_share(attrs=None):
+    """Create a fake share.
+
+    :param dict attrs: A dictionary with all attributes
+    :return: A fake openstack.compute.v2.share.ShareMapping
+        object
+    """
+    attrs = attrs or {}
+
+    # Set default attributes.
+    share_mapping = {
+        "uuid": uuid.uuid4().hex,
+        "share_id": uuid.uuid4().hex,
+        "status": "inactive",
+        "tag": "foo",
+        "export_location": "my-location",
+    }
+
+    # Overwrite default attributes.
+    share_mapping.update(attrs)
+
+    return server_share.ShareMapping(**share_mapping)
+
+
+def create_share(attrs=None, count=2):
+    """Create multiple fake share attachments.
+
+    :param dict attrs: A dictionary with all attributes
+    :param int count: The number of share attachments to fake
+    :return: A list of fake
+        openstack.compute.v2.share_attachment.shareAttachment objects
+    """
+    share = []
+    for i in range(0, count):
+        share.append(create_one_share(attrs))
+
+    return share
 
 def create_one_server_interface(attrs=None):
     """Create a fake SDK ServerInterface.
